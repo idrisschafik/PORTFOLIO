@@ -1,0 +1,265 @@
+---
+/**
+ * Publications.astro
+ * ==================
+ * Publication section with metrics banner, first-author / co-author grouping.
+ * Only rendered when publications data exists.
+ */
+import { publications, publicationMetrics, academicLinks, personalInfo } from '../data/portfolio';
+
+const bookIcon = '<path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/>';
+const externalLinkIcon = '<path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>';
+
+const firstAuthorPubs = publications.filter(p => p.role === 'first-author');
+const coAuthorPubs = publications.filter(p => p.role === 'co-author');
+const studentName = `${personalInfo.firstName} ${personalInfo.lastName}`;
+---
+
+{publications.length > 0 && (
+  <section class="publications section" id="publications">
+    <div class="container">
+      <div class="section__header reveal">
+        <span class="section__label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><Fragment set:html={bookIcon} /></svg>
+          Publications
+        </span>
+        <h2 class="section__title">Research Output</h2>
+      </div>
+
+      <!-- Metrics -->
+      <div class="pub__metrics reveal">
+        <div class="pub__metric">
+          <span class="pub__metric-value gradient-text">{publicationMetrics.totalPapers}</span>
+          <span class="pub__metric-label">Total Papers</span>
+        </div>
+        <div class="pub__metric">
+          <span class="pub__metric-value gradient-text">{publicationMetrics.firstAuthor}</span>
+          <span class="pub__metric-label">First Author</span>
+        </div>
+        <div class="pub__metric">
+          <span class="pub__metric-value gradient-text">{publicationMetrics.coAuthor}</span>
+          <span class="pub__metric-label">Co-Author</span>
+        </div>
+        <div class="pub__metric">
+          <span class="pub__metric-value gradient-text">{publicationMetrics.citations}</span>
+          <span class="pub__metric-label">Citations</span>
+        </div>
+      </div>
+
+      {firstAuthorPubs.length > 0 && (
+        <>
+          <div class="divider reveal">
+            <div class="divider__line"></div>
+            <span class="divider__text">First Author</span>
+            <div class="divider__line"></div>
+          </div>
+          <div class="pub__list reveal-stagger">
+            {firstAuthorPubs.map((pub) => (
+              <div class="pub__card card pub__card--first reveal">
+                <span class="pub__year">{pub.year}</span>
+                <h3 class="pub__title">
+                  {pub.url ? (
+                    <a href={pub.url} target="_blank" rel="noopener noreferrer">
+                      {pub.title}
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><Fragment set:html={externalLinkIcon} /></svg>
+                    </a>
+                  ) : pub.title}
+                </h3>
+                <span class="pub__journal">{pub.journal}</span>
+                <p class="pub__authors" set:html={pub.authors.replace(studentName, `<strong>${studentName}</strong>`)} />
+                {pub.doi && <span class="pub__doi">{pub.doi}</span>}
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+
+      {coAuthorPubs.length > 0 && (
+        <>
+          <div class="divider reveal">
+            <div class="divider__line"></div>
+            <span class="divider__text">Co-Author</span>
+            <div class="divider__line"></div>
+          </div>
+          <div class="pub__list reveal-stagger">
+            {coAuthorPubs.map((pub) => (
+              <div class="pub__card card pub__card--co reveal">
+                <span class="pub__year">{pub.year}</span>
+                <h3 class="pub__title">
+                  {pub.url ? (
+                    <a href={pub.url} target="_blank" rel="noopener noreferrer">
+                      {pub.title}
+                      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><Fragment set:html={externalLinkIcon} /></svg>
+                    </a>
+                  ) : pub.title}
+                </h3>
+                <span class="pub__journal">{pub.journal}</span>
+                <p class="pub__authors" set:html={pub.authors.replace(studentName, `<strong>${studentName}</strong>`)} />
+                {pub.doi && <span class="pub__doi">{pub.doi}</span>}
+              </div>
+            ))}
+          </div>
+        </>
+      )}
+
+      {academicLinks.length > 0 && (
+        <div class="pub__academic-links reveal">
+          {academicLinks.map((link) => (
+            <a href={link.url} class="pub__academic-link" target="_blank" rel="noopener noreferrer">
+              {link.label}
+            </a>
+          ))}
+        </div>
+      )}
+    </div>
+  </section>
+)}
+
+<style>
+  .pub__metrics {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1.5rem;
+    padding: 1.5rem;
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: var(--radius-xl);
+    backdrop-filter: blur(12px);
+    margin-bottom: 2rem;
+  }
+
+  .pub__metric {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  .pub__metric-value {
+    font-size: 2rem;
+    font-weight: 800;
+    font-family: var(--font-mono);
+  }
+
+  .pub__metric-label {
+    font-size: 0.75rem;
+    color: var(--color-text-muted);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  .pub__list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .pub__card {
+    border-left: 3px solid;
+  }
+
+  .pub__card--first {
+    border-left-color: var(--color-primary);
+  }
+
+  .pub__card--co {
+    border-left-color: var(--color-accent);
+  }
+
+  .pub__year {
+    font-family: var(--font-mono);
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 0.2rem 0.6rem;
+    background: rgba(99, 102, 241, 0.1);
+    border-radius: 9999px;
+    color: var(--color-primary-light);
+    display: inline-block;
+    margin-bottom: 0.5rem;
+  }
+
+  .pub__title {
+    font-size: 1rem;
+    font-weight: 600;
+    margin-bottom: 0.35rem;
+  }
+
+  .pub__title a {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    color: var(--color-text);
+    text-decoration: none;
+  }
+
+  .pub__title a svg {
+    width: 14px;
+    height: 14px;
+    opacity: 0.6;
+  }
+
+  .pub__title a:hover {
+    color: var(--color-primary-light);
+  }
+
+  .pub__journal {
+    font-style: italic;
+    font-size: 0.85rem;
+    color: var(--color-accent);
+    display: block;
+    margin-bottom: 0.35rem;
+  }
+
+  .pub__authors {
+    font-size: 0.82rem;
+    color: var(--color-text-muted);
+    line-height: 1.6;
+  }
+
+  .pub__authors :global(strong) {
+    color: var(--color-primary-light);
+    font-weight: 600;
+  }
+
+  .pub__doi {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--color-text-muted);
+    opacity: 0.7;
+    display: block;
+    margin-top: 0.35rem;
+  }
+
+  .pub__academic-links {
+    display: flex;
+    gap: 1rem;
+    justify-content: center;
+    margin-top: 2.5rem;
+    flex-wrap: wrap;
+  }
+
+  .pub__academic-link {
+    padding: 0.5rem 1.25rem;
+    background: var(--color-bg-card);
+    border: 1px solid var(--color-border);
+    border-radius: 9999px;
+    font-size: 0.82rem;
+    font-weight: 500;
+    color: var(--color-text-muted);
+    transition: all var(--transition-fast);
+    text-decoration: none;
+  }
+
+  .pub__academic-link:hover {
+    border-color: var(--color-border-hover);
+    color: var(--color-primary-light);
+  }
+
+  @media (max-width: 768px) {
+    .pub__metrics {
+      grid-template-columns: repeat(2, 1fr);
+    }
+  }
+</style>

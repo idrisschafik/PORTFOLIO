@@ -1,0 +1,211 @@
+---
+/**
+ * Education.astro
+ * ===============
+ * Vertical timeline with gradient dots, pulsing glow, and "Latest" badge.
+ */
+import { education } from '../data/portfolio';
+
+const iconPath = '<path d="M21.42 10.922a1 1 0 0 0-.019-1.838L12.83 5.18a2 2 0 0 0-1.66 0L2.6 9.08a1 1 0 0 0 0 1.832l8.57 3.908a2 2 0 0 0 1.66 0z"/><path d="M22 10v6"/><path d="M6 12.5V16a6 3 0 0 0 12 0v-3.5"/>';
+const externalLinkIcon = '<path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>';
+---
+
+{education.length > 0 && (
+  <section class="education section" id="education">
+    <div class="container">
+      <div class="section__header reveal">
+        <span class="section__label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><Fragment set:html={iconPath} /></svg>
+          Education
+        </span>
+        <h2 class="section__title">Academic Journey</h2>
+      </div>
+
+      <div class="education__timeline">
+        {education.map((item, i) => (
+          <div class="education__entry reveal">
+            <!-- Timeline dot -->
+            <div class="education__dot-wrapper">
+              <div class="education__dot">
+                <div class="education__dot-inner"></div>
+              </div>
+              {i < education.length - 1 && <div class="education__line"></div>}
+            </div>
+
+            <!-- Content card -->
+            <div class="education__card card">
+              <div class="education__card-header">
+                <span class="education__period">{item.period}</span>
+                {item.isLatest && <span class="education__badge-latest">Latest</span>}
+              </div>
+
+              <h3 class="education__degree">{item.degree}</h3>
+              <span class="education__field">{item.field}</span>
+
+              {item.institutionUrl ? (
+                <a href={item.institutionUrl} class="education__institution" target="_blank" rel="noopener noreferrer">
+                  {item.institution}
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><Fragment set:html={externalLinkIcon} /></svg>
+                </a>
+              ) : (
+                <span class="education__institution education__institution--plain">{item.institution}</span>
+              )}
+
+              <p class="education__description">{item.description}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
+
+<style>
+  .education__timeline {
+    display: flex;
+    flex-direction: column;
+    gap: 2rem;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .education__entry {
+    display: flex;
+    gap: 2rem;
+  }
+
+  /* ── Timeline dot & line ── */
+  .education__dot-wrapper {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-shrink: 0;
+    width: 40px;
+  }
+
+  .education__dot {
+    position: relative;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--gradient-primary);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    box-shadow: 0 0 15px rgba(99, 102, 241, 0.3);
+    animation: dot-glow 3s ease-in-out infinite;
+  }
+
+  @keyframes dot-glow {
+    0%, 100% { box-shadow: 0 0 10px rgba(99, 102, 241, 0.2); }
+    50% { box-shadow: 0 0 25px rgba(99, 102, 241, 0.4); }
+  }
+
+  .education__dot-inner {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--color-bg);
+  }
+
+  .education__line {
+    width: 2px;
+    flex: 1;
+    background: linear-gradient(to bottom, var(--color-primary), transparent);
+    margin-top: 0.5rem;
+    border-radius: 1px;
+  }
+
+  /* ── Card ── */
+  .education__card {
+    flex: 1;
+  }
+
+  .education__card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+    flex-wrap: wrap;
+  }
+
+  .education__period {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 0.25rem 0.75rem;
+    background: rgba(99, 102, 241, 0.1);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    border-radius: 9999px;
+    color: var(--color-primary-light);
+  }
+
+  .education__badge-latest {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 0.2rem 0.6rem;
+    background: rgba(52, 211, 153, 0.1);
+    border: 1px solid rgba(52, 211, 153, 0.2);
+    border-radius: 9999px;
+    color: var(--color-success);
+  }
+
+  .education__degree {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: 0.25rem;
+  }
+
+  .education__field {
+    font-size: 0.9rem;
+    font-weight: 500;
+    color: var(--color-accent);
+    display: block;
+    margin-bottom: 0.5rem;
+  }
+
+  .education__institution {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.85rem;
+    color: var(--color-primary-light);
+    margin-bottom: 0.75rem;
+    text-decoration: none;
+  }
+
+  .education__institution svg {
+    width: 14px;
+    height: 14px;
+    opacity: 0.7;
+  }
+
+  .education__institution:hover {
+    color: var(--color-accent);
+  }
+
+  .education__institution--plain {
+    color: var(--color-text-muted);
+  }
+
+  .education__description {
+    font-size: 0.88rem;
+    color: var(--color-text-muted);
+    line-height: 1.7;
+  }
+
+  /* ── Responsive ── */
+  @media (max-width: 768px) {
+    .education__dot-wrapper {
+      display: none;
+    }
+
+    .education__entry {
+      gap: 0;
+    }
+  }
+</style>

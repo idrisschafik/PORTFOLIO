@@ -1,0 +1,147 @@
+---
+/**
+ * Experience.astro
+ * ================
+ * Stacked cards with left accent bar. Only rendered if experience data exists.
+ */
+import { experience } from '../data/portfolio';
+
+const briefcaseIcon = '<path d="M16 20V4a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/><rect width="20" height="14" x="2" y="6" rx="2"/>';
+const externalLinkIcon = '<path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>';
+---
+
+{experience.length > 0 && (
+  <section class="experience section" id="experience">
+    <div class="container">
+      <div class="section__header reveal">
+        <span class="section__label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><Fragment set:html={briefcaseIcon} /></svg>
+          Experience
+        </span>
+        <h2 class="section__title">Professional Journey</h2>
+      </div>
+
+      <div class="experience__list reveal-stagger">
+        {experience.map((item) => (
+          <div class="experience__card card reveal">
+            <div class="experience__accent"></div>
+            <div class="experience__card-inner">
+              <div class="experience__card-header">
+                <span class="experience__period">{item.period}</span>
+                {item.isCurrent && <span class="experience__badge-current">Current</span>}
+              </div>
+              <h3 class="experience__role">{item.role}</h3>
+              {item.companyUrl ? (
+                <a href={item.companyUrl} class="experience__company" target="_blank" rel="noopener noreferrer">
+                  {item.company}
+                  <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><Fragment set:html={externalLinkIcon} /></svg>
+                </a>
+              ) : (
+                <span class="experience__company experience__company--plain">{item.company}</span>
+              )}
+              <p class="experience__description">{item.description}</p>
+            </div>
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
+
+<style>
+  .experience__list {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+    max-width: 800px;
+    margin: 0 auto;
+  }
+
+  .experience__card {
+    padding-left: 2rem;
+    transition: transform var(--transition-base);
+  }
+
+  .experience__card:hover {
+    transform: translateX(6px) translateY(-4px);
+  }
+
+  .experience__accent {
+    position: absolute;
+    left: 0;
+    top: 1.25rem;
+    bottom: 1.25rem;
+    width: 3px;
+    background: var(--gradient-primary);
+    border-radius: 2px;
+  }
+
+  .experience__card-header {
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 0.75rem;
+  }
+
+  .experience__period {
+    font-family: var(--font-mono);
+    font-size: 0.78rem;
+    font-weight: 600;
+    padding: 0.25rem 0.75rem;
+    background: rgba(99, 102, 241, 0.1);
+    border: 1px solid rgba(99, 102, 241, 0.2);
+    border-radius: 9999px;
+    color: var(--color-primary-light);
+  }
+
+  .experience__badge-current {
+    font-size: 0.7rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    padding: 0.2rem 0.6rem;
+    background: rgba(52, 211, 153, 0.1);
+    border: 1px solid rgba(52, 211, 153, 0.2);
+    border-radius: 9999px;
+    color: var(--color-success);
+  }
+
+  .experience__role {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: var(--color-text);
+    margin-bottom: 0.25rem;
+  }
+
+  .experience__company {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.35rem;
+    font-size: 0.85rem;
+    color: var(--color-primary-light);
+    margin-bottom: 0.75rem;
+    text-decoration: none;
+  }
+
+  .experience__company svg {
+    width: 14px;
+    height: 14px;
+    opacity: 0.7;
+  }
+
+  .experience__company:hover {
+    color: var(--color-accent);
+  }
+
+  .experience__company--plain {
+    color: var(--color-text-muted);
+    display: block;
+    margin-bottom: 0.75rem;
+  }
+
+  .experience__description {
+    font-size: 0.88rem;
+    color: var(--color-text-muted);
+    line-height: 1.7;
+  }
+</style>

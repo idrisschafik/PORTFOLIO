@@ -1,0 +1,122 @@
+---
+/**
+ * Certifications.astro
+ * ====================
+ * Grid of certification cards. Only rendered when certifications data exists.
+ */
+import { certifications } from '../data/portfolio';
+
+const awardIcon = '<circle cx="12" cy="8" r="6"/><path d="M15.477 12.89 17 22l-5-3-5 3 1.523-9.11"/>';
+const externalLinkIcon = '<path d="M15 3h6v6"/><path d="M10 14 21 3"/><path d="M18 13v6a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V8a2 2 0 0 1 2-2h6"/>';
+---
+
+{certifications.length > 0 && (
+  <section class="certs section" id="certifications">
+    <div class="container">
+      <div class="section__header reveal">
+        <span class="section__label">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><Fragment set:html={awardIcon} /></svg>
+          Certifications
+        </span>
+        <h2 class="section__title">Licenses & Certifications</h2>
+      </div>
+
+      <div class="certs__grid reveal-stagger">
+        {certifications.map((cert) => (
+          <div class="certs__card card reveal">
+            <div class="certs__header">
+              <h3 class="certs__name">{cert.name}</h3>
+              <span class="certs__date">{cert.date}</span>
+            </div>
+            {cert.issuerUrl ? (
+              <a href={cert.issuerUrl} class="certs__issuer" target="_blank" rel="noopener noreferrer">
+                {cert.issuer}
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><Fragment set:html={externalLinkIcon} /></svg>
+              </a>
+            ) : (
+              <span class="certs__issuer certs__issuer--plain">{cert.issuer}</span>
+            )}
+            {cert.skills.length > 0 && (
+              <div class="certs__tags">
+                {cert.skills.map((skill) => (
+                  <span class="certs__tag">{skill}</span>
+                ))}
+              </div>
+            )}
+          </div>
+        ))}
+      </div>
+    </div>
+  </section>
+)}
+
+<style>
+  .certs__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: 1.5rem;
+  }
+
+  .certs__header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 1rem;
+    margin-bottom: 0.5rem;
+  }
+
+  .certs__name {
+    font-size: 1rem;
+    font-weight: 700;
+    color: var(--color-text);
+  }
+
+  .certs__date {
+    font-family: var(--font-mono);
+    font-size: 0.72rem;
+    color: var(--color-text-muted);
+    white-space: nowrap;
+  }
+
+  .certs__issuer {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.85rem;
+    color: var(--color-primary-light);
+    text-decoration: none;
+    margin-bottom: 0.75rem;
+  }
+
+  .certs__issuer svg {
+    width: 13px;
+    height: 13px;
+    opacity: 0.6;
+  }
+
+  .certs__issuer:hover {
+    color: var(--color-accent);
+  }
+
+  .certs__issuer--plain {
+    color: var(--color-text-muted);
+    display: block;
+    margin-bottom: 0.75rem;
+  }
+
+  .certs__tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.4rem;
+  }
+
+  .certs__tag {
+    padding: 0.2rem 0.6rem;
+    font-size: 0.7rem;
+    font-weight: 500;
+    background: rgba(167, 139, 250, 0.08);
+    border: 1px solid rgba(167, 139, 250, 0.15);
+    border-radius: 9999px;
+    color: var(--color-accent);
+  }
+</style>
